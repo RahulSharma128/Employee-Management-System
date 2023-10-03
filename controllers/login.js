@@ -1,8 +1,9 @@
 const jwt = require("jsonwebtoken");
-const db = require("../routes/db-config");
+const connect = require('../routes/atlas');
 const bcrypt = require("bcryptjs");
- 
+
 const login = async (req, res) => {
+  const db = await connect();
   const { email, password } = req.body;
   if (!email || !password) {
     return res.json({
@@ -10,16 +11,16 @@ const login = async (req, res) => {
       error: "Please enter your email and password"
     });
   } else {
-    db.query('SELECT * FROM users WHERE email = ?', [email], async (err, result) => {
-      if (err) throw err;
-      if (!result.length || !(await bcrypt.compare(password, result[0].password))) {
+    try {
+      const user = await db.collection('users').findOne({ email });
+      if (!user || !(await bcrypt.compare(password, user.password))) {
         return res.json({
           status: "error",
           error: "Incorrect email or password"
         });
       } else {
         const token = jwt.sign(
-          { id: result[0].id },
+          { id: user._id.toString() },
           process.env.JWT_SECRET,
           { expiresIn: process.env.JWT_EXPIRES }
         );
@@ -37,7 +38,13 @@ const login = async (req, res) => {
           success: "User has been logged in"
         });
       }
-    });
+    } catch (err) {
+      console.log(err);
+      return res.json({
+        status: "error",
+        error: "Something went wrong"
+      });
+    }
   }
 };
 

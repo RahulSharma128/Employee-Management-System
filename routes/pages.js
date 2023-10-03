@@ -21,12 +21,11 @@ router.get('/Employee/search', loggedIn,async (req, res) => {
     res.status(500).send('Error retrieving employee data');
   }
 });
-
-router.get('/Employee/searching',loggedIn,async(req, res) => {
-const name = req.query.name;
-const mobile = req.query.mobile;
-const Data = await showemployee(name || '', mobile || '');
-res.send(Data);
+router.get('/Employee/searching', loggedIn, async (req, res) => {
+  const name = req.query.name || '';
+  const mobile = req.query.mobile || '';
+  const data = await showemployee(name, mobile);
+  res.send(data);
 });
 
 router.get('/Employee/delete',deleteEmp,(req,res)=>{
@@ -35,7 +34,9 @@ router.get('/Employee/delete',deleteEmp,(req,res)=>{
 })
 
 router.get('/Employee/edit', loggedIn, editEmp, (req, res) => {
-  res.render('update', { user: req.user });
+ //console.log(req.employee._id.toString()); // "644bbad02a19f2c42b1303ab"  ->fixed
+
+  res.render('update', { user: req.employee });
 });
 
 

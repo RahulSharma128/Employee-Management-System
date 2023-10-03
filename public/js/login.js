@@ -23,7 +23,7 @@ loginBtn.addEventListener('click', (event)=>{
             success.innerText=data.success,
             setTimeout(function() {
                 window.location.href = "/";
-              }, 900);
+              }, 700);
             } 
         }) 
 })

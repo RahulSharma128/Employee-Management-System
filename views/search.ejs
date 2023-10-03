@@ -40,7 +40,7 @@
             <th>Edit</th>
             <th>Delete</th>
         </tr>
-        
+      
         <% if(userData.length!=0) {%>
 
           <% for (var i=0 ; i< userData.length ; i++) { %>
@@ -51,8 +51,8 @@
             <td><%=userData[i].email %></td>
             <td><%=userData[i].city %></td>
             <td><%=userData[i].phoneNumber %></td>
-            <td><a href="/Employee/edit?edit=<%=userData[i].id%>">Edit</a></td>
-            <td><a href="/Employee/delete?delete=<%=userData[i].id%>">Delete</a></td>
+            <td><a href="/Employee/edit?edit=<%=userData[i]._id%>">Edit</a></td>
+            <td><a href="/Employee/delete?delete=<%=userData[i]._id%>">Delete</a></td>
         </tr>
         <%  } %>
         <% } else{ %>

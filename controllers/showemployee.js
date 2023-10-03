@@ -1,21 +1,17 @@
-const db =require("../routes/db-config");
+const { MongoClient } = require('mongodb');
+const connectDB = require('../routes/atlas');
 
-const showemployee = (searchTerm1, searchTerm2) => {
-  return new Promise((resolve, reject) => {
-    const query = `SELECT * FROM employe WHERE firstName LIKE '%${searchTerm1}%' AND phoneNumber LIKE '%${searchTerm2}%'`;
-    db.query(query, (err, res) => {
-      if (err) {
-        console.error(err);
-        reject(err);
-      } else {
-        resolve(res);
-      }
-    });
-  });
+const showemployee = async (name, mobile) => {
+  const db = await connectDB();
+  try {
+    const result = await db.collection('employees').find({
+      firstName: { $regex: name, $options: 'i' },
+      phoneNumber: { $regex: mobile, $options: 'i' }
+    }).toArray();
+    return result;
+  } catch (err) {
+    console.log(err);
+  }
 };
 
-
-
-module.exports=showemployee;
-
-
+module.exports = showemployee;
