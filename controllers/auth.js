@@ -5,8 +5,6 @@ const employee = require("./employee");
 
 const router = express.Router();
 
-
-//router.get("/showemployee", showemployee);
 router.post("/register",register);
 router.post("/login",login);
 router.post("/employee",employee);

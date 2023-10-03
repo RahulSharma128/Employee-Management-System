@@ -1,23 +1,25 @@
-const db = require("../routes/db-config");
+const { showEmployee,connectDB } = require("../routes/mongo");
 
-const update = (req, res) => {
-  const { id,firstName, lastName, email, phoneNumber, address, country, city } = req.body;
-  const query = `UPDATE employe SET firstName = ?, lastName = ?, email = ?, phoneNumber = ?, address = ?, country = ?, city = ? WHERE id = ?`;
-  db.query(
-    query,
-    [firstName, lastName, email, phoneNumber, address, country, city, id],
-    (error, results, fields) => {
-      if (error) {
-        console.error(error);
-        res.status(500).send("An error occurred while updating the employee.");
-      } else if (results.affectedRows === 0) {
-        res.status(404).send("Employee not found.");
-      } else {
-        res.status(200).send("Employee updated successfully!");
-      }
+const update = async (req, res) => {
+  connectDB();
+  const { id, firstName, lastName, email, phoneNumber, address, country, city, skills } = req.body;
+//find by id error trying other method part 2
+  try {
+    const employee = await showEmployee.findOneAndUpdate(
+      { _id: id },
+      { firstName, lastName, email, phoneNumber, address, country, city, skills },
+      { new: true }
+    );
+
+    if (!employee) {
+      return res.status(404).send("Employee not found.");
     }
-  );
+
+    res.status(200).send("Employee updated successfully!");
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("An error occurred while updating the employee.");
+  }
 };
 
 module.exports = update;
-// connection.end();

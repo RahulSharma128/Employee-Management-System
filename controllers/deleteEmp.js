@@ -1,21 +1,22 @@
-const db = require("../routes/db-config");
+const { showEmployee,connectDB } = require("../routes/mongo");
 
+const deleteEmp = async (req, res, next) => {
+  connectDB();
+  const id = req.query.delete;
 
-const deleteEmp = (req, res, next) => {
-    const id = req.query.delete;
-    // TRy-5t  (3 was better)
-    const sql = `DELETE FROM employe WHERE id = '${id}'`;
-    db.query(sql, (err, result) => {
-      if (err) {
-        console.error(err);
-        res.status(500).send("Failed to delete employee");
-      } else if (result.affectedRows === 0) {
-        res.status(404).send("Employee not found");
-      } else {
-        console.log(`Deleted ${result.affectedRows} employee(s)`);
-        next(); // Proceed to the next middleware or route handler
-      }
-    });
+  try {
+    const deletedEmp = await showEmployee.findOneAndDelete({ _id: id });
+
+    if (!deletedEmp) {
+      res.status(404).send('Employee not found');
+    } else {
+      console.log(`Deleted employee with ID ${id}`);
+      next();
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Failed to delete employee');
   }
+};
 
-  module.exports=deleteEmp;
+module.exports = deleteEmp;

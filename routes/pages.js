@@ -35,7 +35,9 @@ router.get('/Employee/delete',deleteEmp,(req,res)=>{
 })
 
 router.get('/Employee/edit', loggedIn, editEmp, (req, res) => {
-  res.render('update', { user: req.user });
+ //console.log(req.employee._id.toString()); // "644bbad02a19f2c42b1303ab"  ->fixed
+//console.log(req.employee);
+  res.render('update', { user: req.employee });
 });
 
 
